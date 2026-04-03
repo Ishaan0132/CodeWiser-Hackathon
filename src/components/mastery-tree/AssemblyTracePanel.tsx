@@ -176,7 +176,10 @@ export function AssemblyTracePanel() {
                 className="p-2 bg-green-50 dark:bg-green-950/50 rounded-md border border-green-200 dark:border-green-800"
               >
                 <p className="text-sm font-medium">
-                  {index + 1}. {question.text.substring(0, 60)}...
+                  {index + 1}.{' '}
+                  {(question.text ?? '').length > 60
+                    ? `${(question.text ?? '').slice(0, 60)}...`
+                    : (question.text ?? '')}
                 </p>
                 <div className="flex flex-wrap gap-1 mt-1">
                   {question.microSkillTags.slice(0, 3).map((tag) => (

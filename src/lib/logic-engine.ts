@@ -467,6 +467,19 @@ export function createQuizSession(
     // Use the Remedial Quiz Generator
     const remedialQuiz = generateRemedialQuiz(nodeId, skillProfile, seenQuestionIds);
     questions = remedialQuiz.questions;
+    // If no unseen candidates matched weak tags (e.g. user exhausted the bank), fall back to node questions
+    if (questions.length === 0) {
+      const nodeQuestions = questionBank.filter(q => q.nodeId === nodeId);
+      const unseenQuestions = nodeQuestions.filter(q => !seenQuestionIds.includes(q.id));
+      questions = unseenQuestions.slice(0, SCORING_CONSTANTS.REMEDIAL_QUIZ_SIZE);
+      if (questions.length < SCORING_CONSTANTS.REMEDIAL_QUIZ_SIZE) {
+        const remaining = nodeQuestions.filter(q => !questions.includes(q));
+        questions = [
+          ...questions,
+          ...remaining.slice(0, SCORING_CONSTANTS.REMEDIAL_QUIZ_SIZE - questions.length),
+        ];
+      }
+    }
   } else {
     // Regular quiz: get all questions for the node, filter out seen ones
     const nodeQuestions = questionBank.filter(q => q.nodeId === nodeId);
@@ -504,8 +517,9 @@ export function processAnswer(
   selectedOptionIndex: number,
   timeTakenSeconds: number,
   usedHint: boolean
-): { attempt: QuizAttempt; isComplete: boolean } {
+): { attempt: QuizAttempt; isComplete: boolean } | null {
   const question = session.questions[questionIndex];
+  if (!question) return null;
   const isCorrect = selectedOptionIndex === question.correctOptionIndex;
   
   const scoreDetails = calculateAttemptScore(

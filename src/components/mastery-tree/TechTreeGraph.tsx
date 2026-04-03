@@ -7,7 +7,7 @@
  * Nodes are color-coded by state and clickable for quiz interaction.
  */
 
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import {
   ReactFlow,
   Background,
@@ -31,7 +31,7 @@ const nodeTypes = {
 };
 
 export function TechTreeGraph() {
-  const { nodeProgress, selectNode, startQuiz, selectedNodeId } = useMasteryTreeStore();
+  const { nodeProgress, selectNode } = useMasteryTreeStore();
   
   // Convert tech tree nodes to React Flow nodes
   const initialNodes: Node<NodeData>[] = useMemo(() => {
@@ -70,8 +70,8 @@ export function TechTreeGraph() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   
-  // Update nodes when progress changes
-  useMemo(() => {
+  // Sync React Flow nodes when progress changes (must not run during render — useMemo+setNodes caused update loops / crashes)
+  useEffect(() => {
     setNodes((nds) =>
       nds.map((node) => ({
         ...node,

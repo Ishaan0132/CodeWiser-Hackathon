@@ -32,6 +32,7 @@ import {
   GitBranch,
   Zap
 } from 'lucide-react';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function Home() {
   const { nodeProgress, resetProgress, selectedNodeId, showQuiz } = useMasteryTreeStore();
@@ -72,6 +73,7 @@ export default function Home() {
               
               {/* Action Buttons */}
               <div className="flex items-center gap-2">
+                <ThemeToggle />
                 <Button
                   variant="ghost"
                   size="sm"

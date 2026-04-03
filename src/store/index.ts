@@ -166,18 +166,21 @@ export const useMasteryTreeStore = create<MasteryTreeState>()(
       
       const timeTakenSeconds = Math.round((Date.now() - quizStartTime) / 1000);
       
-      const { attempt, isComplete } = processAnswer(
+      const result = processAnswer(
         currentQuizSession,
         currentQuestionIndex,
         selectedOptionIndex,
         timeTakenSeconds,
         usedHint
       );
+      if (!result) return;
+      const { attempt, isComplete } = result;
       
       // Update the session with the new attempt
       const updatedAttempts = [...currentQuizSession.attempts, attempt];
       const questions = currentQuizSession.questions;
       const question = questions[currentQuestionIndex];
+      if (!question) return;
       
       // Update skill profile
       const updatedSkillProfile = updateSkillProfile(skillProfile, question, attempt);
