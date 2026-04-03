@@ -164,7 +164,7 @@ function calculateAttemptScore(isCorrect, timeTaken, estimatedTime, usedHint) {
     LOCKED ──(prereqs mastered)──► AVAILABLE ──(score≥85)──► MASTERED
                                       │                        ▲
                                       │                        │
-                          (score 60-84)│                        │
+                         (score 60-84)│                        │
                                       ▼                        │
                                   FRAGILE ──(score≥85)─────────┘
                                       │
